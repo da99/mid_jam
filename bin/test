@@ -9,7 +9,7 @@
 #
 set -u -e -o pipefail
 
-luarocks make > /dev/null 2>&1
+luarocks make > /dev/null
 eval $(luarocks path)
 if [[ -z "$@" ]]
 then
