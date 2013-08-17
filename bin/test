@@ -9,10 +9,17 @@
 #
 set -u -e -o pipefail
 
-for file in tests/*.lua
-do
-  echo -e -n "FILE: \e[1;38m$file\e[0m "
-  busted $file
-done
+luarocks make > /dev/null 2>&1
+eval $(luarocks path)
+if [[ -z "$@" ]]
+then
+  for file in tests/*.lua
+  do
+    echo -e -n "FILE: \e[1;38m$file\e[0m "
+    busted $file
+  done
+else
+  busted "$@"
+fi
 
 
