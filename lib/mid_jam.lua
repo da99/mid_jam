@@ -43,6 +43,13 @@ function Mid.meta:GET(path, func)
   return f
 end -- func
 
+function Mid.meta:RUN(req, resp)
+  _.detect(self.paths, function (f)
+    return f(req, resp)
+  end)
+
+  return req, resp
+end
 --  ----------------------------------------
 --  Done
 --  ----------------------------------------
