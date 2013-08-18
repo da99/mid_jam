@@ -48,6 +48,17 @@ function to_param_table(path)
   return tbl
 end
 
+function params_are_valid(tbl, req, resp, env)
+  local is_valid = true
+  _.each(tbl.params_table, function (arr, name)
+    is_valid = not _.detect(arr, function (rule)
+      local is_pass = (rule.rule == 'length at least') and (#req.params[name] >= rule.args[1])
+      return not is_pass
+    end)
+  end)
+  return is_valid
+end
+
 function path_match(req, meth, path)
 
   -- Do the match in method?
@@ -129,7 +140,7 @@ function Mid.meta:New_Method(name)
         if not self.params_table[name] then
           error("Path has no param named: " .. name)
         end
-        _.push(self.params_table, {action_name = action_name, args = {...} })
+        _.push(self.params_table[name], {rule = action_name, args = {...} })
         return self
       end,
       run         = function (self, func)
@@ -139,9 +150,15 @@ function Mid.meta:New_Method(name)
     }
 
     local function run_func_if_match(req, resp, env)
-      if path_match(req, name, path) then
-        return fin.func(req, resp, env)
+      if not path_match(req, name, path) then
+        return
       end
+
+      if not params_are_valid(fin, req, resp, env) then
+        return
+      end
+
+      return fin.func(req, resp, env)
     end
 
     if not func and _.isEmpty(fin.params_table) then

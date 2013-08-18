@@ -30,6 +30,26 @@ describe("named args:params", function ()
 
     assert.same({1}, o)
   end)
+
+  it("does not run func if path does not fulill requirements", function ()
+    local m = Mid.new()
+    local o = {}
+    m:GET('/:name')
+    :params('name', 'length at least', 5)
+    :run(function ()
+      error("This should not be reached.")
+    end)
+
+    m:GET('/:name')
+    :params('name', 'length at least', 3)
+    :run(function ()
+      _.push(o, 1)
+    end)
+
+    m:RUN(GET('/ted'))
+
+    assert.same({1}, o)
+  end)
 end)
 
 
