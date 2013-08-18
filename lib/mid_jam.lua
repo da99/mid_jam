@@ -121,23 +121,28 @@ function Mid.meta:New_Method(name)
   Mid.meta[name] = function (self, raw_path, func)
     local path = stringx.strip(raw_path)
 
-    local function run_func_if_match(req, resp, env)
-      if path_match(req, name, path) then
-        return func(req, resp, env)
-      end
-    end
-
     local fin = {
       params_table = to_param_table(path),
       path         = path,
+      func         = func,
       params       = function (self, name, action_name, ...)
         if not self.params_table[name] then
           error("Path has no param named: " .. name)
         end
         _.push(self.params_table, {action_name = action_name, args = {...} })
         return self
+      end,
+      run         = function (self, func)
+        self.func = func
+        return self
       end
     }
+
+    local function run_func_if_match(req, resp, env)
+      if path_match(req, name, path) then
+        return fin.func(req, resp, env)
+      end
+    end
 
     if not func and _.isEmpty(fin.params_table) then
       error('Path requires named params when no function is given: ' .. path)
@@ -145,6 +150,7 @@ function Mid.meta:New_Method(name)
 
     setmetatable(fin, {
       __call = function (tbl, ...)
+        local f = tbl.func or func
         run_func_if_match(...)
       end
     })

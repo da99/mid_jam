@@ -24,5 +24,6 @@ build = {
   type = "builtin",
   modules = {
     mid_jam = "lib/mid_jam.lua",
+    ['mid_jam.test_dsl'] = "lib/test_dsl.lua"
   }
 }
