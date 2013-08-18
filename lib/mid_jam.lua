@@ -185,8 +185,7 @@ Mid.meta:New_Method('POST')
 Mid.meta:New_Method('PUT')
 Mid.meta:New_Method('DELETE')
 
-
--- Finished actions -----------------------
+--  ----------------------------------------
 
 function Mid.meta:RUN(req, resp, env)
   _.detect(self.paths, function (f)
