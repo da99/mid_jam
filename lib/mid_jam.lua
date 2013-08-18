@@ -85,7 +85,7 @@ function path_match(req, meth, path)
       return true
     end
 
-    if _.empty(stringx.strip(actual)) then -- guards against ///path//
+    if _.isEmpty(stringx.strip(actual)) then -- guards against ///path//
       return false
     end
 
@@ -128,9 +128,20 @@ function Mid.meta:New_Method(name)
     end
 
     local fin = {
-      params = to_param_table(path),
-      path   = path
+      params_table = to_param_table(path),
+      path         = path,
+      params       = function (self, name, action_name, ...)
+        if not self.params_table[name] then
+          error("Path has no param named: " .. name)
+        end
+        _.push(self.params_table, {action_name = action_name, args = {...} })
+        return self
+      end
     }
+
+    if not func and _.isEmpty(fin.params_table) then
+      error('Path requires named params when no function is given: ' .. path)
+    end
 
     setmetatable(fin, {
       __call = function (tbl, ...)
