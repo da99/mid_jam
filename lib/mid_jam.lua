@@ -102,15 +102,8 @@ end
 -- HTTP Methods-----------------------------
 
 function Mid.meta:New_Method(name)
-  Mid.meta[name] = function (self, path, func)
-    local strip = stringx.strip(path)
-    if path ~= strip then
-      error("Path has whitespace: \"" .. path .. '"')
-    end
-
-    if _.isEmpty(path) then
-      error("Path is empty for: " .. name)
-    end
+  Mid.meta[name] = function (self, raw_path, func)
+    local path = stringx.strip(raw_path)
 
     local function f(req, resp, env)
       if path_match(req, name, path) then

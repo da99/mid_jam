@@ -18,10 +18,31 @@ Usage
       :param("name", "length at least", 1)
       :param("name", "length at most", 20)
       :param("obj",  "within", {'pet', 'candy', 'snowball'})
-      :run(function (req, resp, next)
+      :run(function (req, resp, env)
         -- do something magical
       end)
   )
+```
+Available HTTP\_Methods
+=======================
+
+  * HEAD
+  * GET
+  * POST
+  * PUT
+  * DELETE
+
+Creation Your Own HTTP Method Handler
+==============================
+
+```lua
+  local Mid_Jam = require("mid_jam")
+  local mj      = Mid_Jam.new()
+
+  mj:New_Method('PATCH')
+  mj:PATCH("/puppy", function (req, resp, env)
+    -- do something to your puppy
+  end)
 ```
 
 Installation
