@@ -14,11 +14,11 @@ Usage
   local mj      = Mid_Jam.new()
 
   some_rack_clone.use(
-    mj.GET("/my/:name/:obj")
-      .param("name", "length at least", 1)
-      .param("name", "length at most", 20)
-      .param("obj",  "within", {'pet', 'candy', 'snowball'})
-      .then(function (req, resp, next)
+    mj:GET("/my/:name/:obj")
+      :param("name", "length at least", 1)
+      :param("name", "length at most", 20)
+      :param("obj",  "within", {'pet', 'candy', 'snowball'})
+      :then(function (req, resp, next)
         -- do something magical
       end)
   )
