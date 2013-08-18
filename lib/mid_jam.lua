@@ -9,6 +9,7 @@ local unpack       = unpack
 
 local _            = require("underscore")
 local stringx      = require("pl.stringx")
+local pretty       = require("pl.pretty")
 
 
 -- -----------------------------------------
@@ -32,6 +33,21 @@ end
 -- Helpers
 -- ----------------------------------------
 
+function strip_whitespace_and_first_colon(str)
+  return stringx.replace(stringx.strip(str), ':', '', 1)
+end
+
+function to_param_table(path)
+  local tbl    = {}
+  _.each(stringx.split(path, '/'), function (raw_v)
+    local v = stringx.strip(raw_v)
+    if stringx.at(v, 1) == ':' then
+      tbl[strip_whitespace_and_first_colon(v)] = {}
+    end
+  end)
+  return tbl
+end
+
 function path_match(req, meth, path)
 
   -- Do the match in method?
@@ -49,7 +65,7 @@ function path_match(req, meth, path)
 
   local patterns   = stringx.split(up_path, '/')
   local orig_names = _.map(stringx.split(path, '/'), function (v)
-    return stringx.replace(stringx.strip(v), ':', '', 1)
+    return strip_whitespace_and_first_colon(v)
   end)
   local args       = stringx.split(up_info, '/')
 
@@ -105,14 +121,25 @@ function Mid.meta:New_Method(name)
   Mid.meta[name] = function (self, raw_path, func)
     local path = stringx.strip(raw_path)
 
-    local function f(req, resp, env)
+    local function run_func_if_match(req, resp, env)
       if path_match(req, name, path) then
         return func(req, resp, env)
       end
     end
 
-    _.push(self.paths, f)
-    return f
+    local fin = {
+      params = to_param_table(path),
+      path   = path
+    }
+
+    setmetatable(fin, {
+      __call = function (tbl, ...)
+        run_func_if_match(...)
+      end
+    })
+
+    _.push(self.paths, fin)
+    return fin
   end
 
   return Mid.meta[name]
@@ -127,9 +154,9 @@ Mid.meta:New_Method('DELETE')
 
 -- Finished actions -----------------------
 
-function Mid.meta:RUN(req, resp)
+function Mid.meta:RUN(req, resp, env)
   _.detect(self.paths, function (f)
-    return f(req, resp)
+    return f(req, resp, env)
   end)
 
   return req, resp
