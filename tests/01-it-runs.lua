@@ -19,7 +19,7 @@ describe(":RUN", function ()
       return "done"
     end)
 
-    m:RUN({PATH_INFO="/home"}, {})
+    m:RUN({REQUEST_METHOD='GET', PATH_INFO="/home"}, {})
 
     assert.same({1,1}, o)
   end)

@@ -9,7 +9,9 @@
 #
 set -u -e -o pipefail
 
-luarocks make > /dev/null
+echo -e "\n\n================================="
+luarocks make > /dev/null 2>/tmp/l.r.err || cat /tmp/l.r.err
+
 eval $(luarocks path)
 if [[ -z "$@" ]]
 then
