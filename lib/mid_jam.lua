@@ -69,15 +69,15 @@ function path_match(req, meth, path)
       return true
     end
 
-    if #(stringx.strip(actual)) == '' then -- guards against ///path//
+    if _.empty(stringx.strip(actual)) then -- guards against ///path//
       return false
     end
 
-    if not (stringx.at(v, 1) == ':') then
+    if stringx.at(v, 1) ~= ':' then -- if not name, return
       return false
     end
 
-    if not (stringx.strip(actual) == actual) then -- whitespace in path piece
+    if stringx.strip(actual) ~= actual then -- whitespace in path piece
       return false
     end
 
@@ -101,65 +101,36 @@ end
 
 -- HTTP Methods-----------------------------
 
-function Mid.meta:HEAD(path, func)
-  local f
-  function f(req, resp)
-    if path_match(req, 'HEAD', path) then
-      return func(env, req, resp)
+function Mid.meta:New_Method(name)
+  Mid.meta[name] = function (self, path, func)
+    local strip = stringx.strip(path)
+    if path ~= strip then
+      error("Path has whitespace: \"" .. path .. '"')
     end
+
+    if _.isEmpty(path) then
+      error("Path is empty for: " .. name)
+    end
+
+    local function f(req, resp, env)
+      if path_match(req, name, path) then
+        return func(req, resp, env)
+      end
+    end
+
+    _.push(self.paths, f)
+    return f
   end
 
-  _.push(self.paths, f)
-  return f
-end -- func
+  return Mid.meta[name]
+end
 
-function Mid.meta:GET(path, func)
-  local f
-  function f(req, resp)
-    if path_match(req, 'GET', path) then
-      return func(req, resp)
-    end
-  end
+Mid.meta:New_Method('HEAD')
+Mid.meta:New_Method('GET')
+Mid.meta:New_Method('POST')
+Mid.meta:New_Method('PUT')
+Mid.meta:New_Method('DELETE')
 
-  _.push(self.paths, f)
-  return f
-end -- func
-
-function Mid.meta:POST(path, func)
-  local f
-  function f(req, resp)
-    if path_match(req, 'POST', path) then
-      return func(req, resp)
-    end
-  end
-
-  _.push(self.paths, f)
-  return f
-end -- func
-
-function Mid.meta:PUT(path, func)
-  local f
-  function f(req, resp)
-    if path_match(req, 'PUT', path) then
-      return func(req, resp)
-    end
-  end
-
-  _.push(self.paths, f)
-  return f
-end -- func
-
-function Mid.meta:DELETE(path, func)
-  local f
-  function f(req, resp)
-    if path_match(req, 'DELETE', path) then
-      return func(req, resp)
-    end
-  end
-
-  _.push(self.paths, f)
-  return f
-end -- func
 
 -- Finished actions -----------------------
 
