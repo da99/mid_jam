@@ -4,6 +4,7 @@ local print        = print
 local select       = select
 local error        = error
 local require      = require
+local tonumber     = tonumber
 local string       = string
 local unpack       = unpack
 
@@ -21,7 +22,8 @@ setfenv(1, ENV)
 require('mid_jam._helper').to(ENV)
 
 local Mid = {
-  meta = {}
+  meta = {},
+  Rules = {}
 }
 
 function Mid.new()
@@ -30,6 +32,43 @@ function Mid.new()
   m.paths = {}
   return m
 end
+
+function Mid.new_rule(name, func)
+  Mid.Rules[name] = func
+  return Mid
+end
+
+Mid.new_rule("length min", function(args, req, resp, env)
+  return (#args.val >= args.args[1])
+end)
+Mid.new_rule("length max", function(args, req, resp, env)
+  return (#args.val <= args.args[1])
+end)
+
+Mid.new_rule("length between", function(args, req, resp, env)
+  return (#args.val > args.args[1] and #args.val < args.args[2])
+end)
+
+Mid.new_rule("is number", function(args, req, resp, env)
+  return not(not(tonumber(args.val)))
+end)
+
+Mid.new_rule("a number between", function(args, req, resp, env)
+  if not Mid.Rules["is number"](args, req) then
+    return false
+  end
+
+  local num = tonumber(args.val)
+  return num > args.args[1] and num < args.args[2]
+end)
+
+Mid.new_rule("matches", function(args, req, resp, env)
+  return not(not string.match(args.val, args.args[1]))
+end)
+
+Mid.new_rule("does not match", function(args, req, resp, env)
+  return not string.match(args.val, args.args[1])
+end)
 
 -- ----------------------------------------
 -- Helpers
@@ -47,6 +86,7 @@ function Mid.meta:New_Method(name)
 
     -- Start setting up the callable table
     local fin = {
+      Mid          = Mid,
       params_table = to_param_table(path),
       params_rule_array = {},
       path         = path,

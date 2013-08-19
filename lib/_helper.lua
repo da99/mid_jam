@@ -14,34 +14,6 @@ local ENV          = {}
 setfenv(1, ENV)
 
 local The_Rules = {}
-The_Rules = {
-  ["length min"] = function(args, req, resp, env)
-    return (#args.val >= args.args[1])
-  end,
-  ["length max"] = function(args, req, resp, env)
-    return (#args.val <= args.args[1])
-  end,
-  ["length between"] = function(args, req, resp, env)
-    return (#args.val > args.args[1] and #args.val < args.args[2])
-  end,
-  ["is number"] = function(args, req, resp, env)
-    return not(not(tonumber(args.val)))
-  end,
-  ["a number between"] = function(args, req, resp, env)
-    if not The_Rules["is number"](args, req) then
-      return false
-    end
-
-    local num = tonumber(args.val)
-    return num > args.args[1] and num < args.args[2]
-  end,
-  ["matches"] = function(args, req, resp, env)
-    return not(not string.match(args.val, args.args[1]))
-  end,
-  ["does not match"] = function(args, req, resp, env)
-    return not string.match(args.val, args.args[1])
-  end
-}
 
 function canon_rule_name (str)
   return string.lower( (stringx.strip(str)):gsub("%s+", " ") )
@@ -63,6 +35,7 @@ function to_param_table(path)
 end
 
 function params_fulfill_rules(tbl, req, resp, env)
+  local The_Rules = tbl.Mid.Rules
   local is_fail = _.detect(tbl.params_rule_array, function (rule)
     local clone = _.clone(rule)
 
