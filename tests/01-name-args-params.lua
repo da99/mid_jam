@@ -1,8 +1,18 @@
 
-local Mid  = require("mid_jam")
-local _    = require("underscore")
-local S    = require("pl.stringx")
-require("mid_jam.test_dsl")
+local Mid      = require("mid_jam")
+local _        = require("underscore")
+local S        = require("pl.stringx")
+local describe = describe
+local it       = it
+local ENV      = {}
+local require  = require
+local pcall    = pcall
+local assert   = assert
+local error    = error
+local table    = table
+
+setfenv(1, ENV)
+require('mid_jam.test_dsl').to(ENV)
 
 describe("named args:params", function ()
   it("returns error if no name args", function ()
@@ -10,7 +20,7 @@ describe("named args:params", function ()
     local o = {}
     local val, msg = pcall(function ()
       local f = m:GET("/nAme")
-      :params(":nAme", "length at least", 1)
+      :params(":nAme", "length min", 1)
       :run(function () end)
     end)
 
@@ -22,7 +32,7 @@ describe("named args:params", function ()
     local m = Mid.new()
     local o = {}
     m:GET('/:name')
-    :params('name', "length at least", 1)
+    :params('name', "length min", 1)
     :run(function (req, resp, env)
       _.push(o, 1)
     end)
@@ -35,13 +45,13 @@ describe("named args:params", function ()
     local m = Mid.new()
     local o = {}
     m:GET('/:name')
-    :params('name', 'length at least', 5)
+    :params('name', 'length min', 5)
     :run(function ()
       error("This should not be reached.")
     end)
 
     m:GET('/:name')
-    :params('name', 'length at least', 3)
+    :params('name', 'length min', 3)
     :run(function ()
       _.push(o, 1)
     end)

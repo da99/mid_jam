@@ -9,11 +9,14 @@ Mid\_Jam
 Usage
 =====
 
+Mid\_Jam generates functions that you could use
+in a (Rack\_Jam)[https://github.com/jam-lua/rack\_jam].
+
 ```lua
   local Mid_Jam = require("mid_jam")
   local mj      = Mid_Jam.new()
 
-  some_rack_clone.USE(
+  Rack_Jam.new().BEFORE(
     mj:GET("/my/:name/:obj")
       :param("name", "length at least", 1)
       :param("name", "length at most", 20)

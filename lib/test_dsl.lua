@@ -1,5 +1,9 @@
-local S    = require("pl.stringx")
-local _    = require("underscore")
+local S     = require("pl.stringx")
+local _     = require("underscore")
+local ENV   = {}
+local table = table
+
+setfenv(1, ENV)
 
 function GET(path)
   return {REQUEST_METHOD='GET', PATH_INFO=path}, {}, {}
@@ -13,3 +17,9 @@ function get_error_msg(str)
 end
 
 
+return {
+  ENV=ENV,
+  to = function (e)
+    _.extend(e, ENV)
+  end
+}
