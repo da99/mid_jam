@@ -18,7 +18,7 @@ describe("custom param rules", function ()
     local m = Mid.new()
     local o = {}
     m:GET('/:name')
-    :params('name', function ()
+    :param('name', function ()
       return false
     end)
     :run(function ()
@@ -37,7 +37,7 @@ describe("custom param rules", function ()
     local m = Mid.new()
     local o = {}
     m:GET('/:name')
-    :params('name', function ()
+    :param('name', function ()
       return true
     end)
     :run(function ()
@@ -56,7 +56,7 @@ describe("custom param rules", function ()
     local m = Mid.new()
     local o = {}
     m:GET('/:name')
-    :params('name', 4, 5, 6, 7, function (args, req, resp, env)
+    :param('name', 4, 5, 6, 7, function (args, req, resp, env)
       _.push(o, args)
       return false
     end)

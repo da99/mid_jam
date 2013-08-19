@@ -98,7 +98,7 @@ function Mid.New_Method(name)
       params_rule_array = {},
       path         = path,
       func         = func,
-      params       = function (self, name, action_name, ...)
+      param        = function (self, name, action_name, ...)
         if not self.params_table[name] then
           error("Path has no param named: " .. name)
         end
