@@ -3,7 +3,7 @@ package = "mid_jam"
 version = "0.1-0"
 source = {
   url = "http://github.com/jam-lua/mid_jam.git",
-  tag = "2d42d50",
+  tag = "v0.1-0",
   dir = "."
 }
 description = {
