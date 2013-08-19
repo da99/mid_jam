@@ -160,8 +160,14 @@ Mid.New_Method('POST')
 Mid.New_Method('PUT')
 Mid.New_Method('DELETE')
 
---  ----------------------------------------
+-- -----------------------------------------
 
+-- -----------------------------------------
+-- This function is mostly used during
+-- testing. You won't need it when using
+-- Mid_Jam in another module that executes
+-- the functions in the order they want.
+-- -----------------------------------------
 function Mid.meta:RUN(req, resp, env)
   _.detect(self.paths, function (f)
     return f(req, resp, env)
