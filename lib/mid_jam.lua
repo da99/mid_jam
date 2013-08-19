@@ -39,18 +39,22 @@ function Mid.new_rule(name, func)
 end
 
 Mid.new_rule("length min", function(args, req, resp, env)
-  return (#args.val >= args.args[1])
+  local val = req.params[args[1]]
+  return #val >= args[2]
 end)
+
 Mid.new_rule("length max", function(args, req, resp, env)
-  return (#args.val <= args.args[1])
+  local val = req.params[args[1]]
+  return (#val <= args[2])
 end)
 
 Mid.new_rule("length between", function(args, req, resp, env)
-  return (#args.val > args.args[1] and #args.val < args.args[2])
+  local val = req.params[args[1]]
+  return (#val > args[2] and #val < args[3])
 end)
 
 Mid.new_rule("is number", function(args, req, resp, env)
-  return not(not(tonumber(args.val)))
+  return not(not(tonumber(req.params[args[1]])))
 end)
 
 Mid.new_rule("a number between", function(args, req, resp, env)
@@ -58,16 +62,16 @@ Mid.new_rule("a number between", function(args, req, resp, env)
     return false
   end
 
-  local num = tonumber(args.val)
-  return num > args.args[1] and num < args.args[2]
+  local num = tonumber(req.params[args[1]])
+  return num > args[2] and num < args[3]
 end)
 
 Mid.new_rule("matches", function(args, req, resp, env)
-  return not(not string.match(args.val, args.args[1]))
+  return not(not string.match(req.params[args[1]], args[2]))
 end)
 
 Mid.new_rule("does not match", function(args, req, resp, env)
-  return not string.match(args.val, args.args[1])
+  return not string.match(req.params[args[1]], args[2])
 end)
 
 -- ----------------------------------------

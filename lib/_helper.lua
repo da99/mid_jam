@@ -13,8 +13,6 @@ local pretty       = require("pl.pretty")
 local ENV          = {}
 setfenv(1, ENV)
 
-local The_Rules = {}
-
 function canon_rule_name (str)
   return string.lower( (stringx.strip(str)):gsub("%s+", " ") )
 end
@@ -54,7 +52,8 @@ function params_fulfill_rules(tbl, req, resp, env)
       error("No rule defined for: " .. rule_name)
     end
 
-    return not f({name = param_name, val=req.params[param_name], args=clone}, req, resp, env)
+    _.unshift(clone, param_name)
+    return not f(clone, req, resp, env)
   end)
 
   return not is_fail
