@@ -1,9 +1,9 @@
 
 package = "mid_jam"
-version = "0.1-1"
+version = "0.1-2"
 source = {
   url = "http://github.com/jam-lua/mid_jam.git",
-  tag = "v0.1-1",
+  tag = "v0.1-2",
   dir = "."
 }
 description = {
