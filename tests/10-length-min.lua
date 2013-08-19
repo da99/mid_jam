@@ -14,7 +14,7 @@ setfenv(1, ENV)
 require('mid_jam.test_dsl').to(ENV)
 
 describe("length min", function ()
-  it("does not run if params is less than length", function ()
+  it("does not run if params is less than min", function ()
     local m = Mid.new()
     local o = {}
     m:GET('/:name')
@@ -31,7 +31,7 @@ describe("length min", function ()
     assert.same({2}, o)
   end)
 
-  it("runs if param is at least specified length", function ()
+  it("runs if param is at least specified min", function ()
     local m = Mid.new()
     local o = {}
     m:GET('/:name')
@@ -44,7 +44,7 @@ describe("length min", function ()
     assert.same({1}, o)
   end)
 
-  it("runs if param is at more than specified length", function ()
+  it("runs if param is at more than specified min", function ()
     local m = Mid.new()
     local o = {}
     m:GET('/:name')

@@ -14,7 +14,7 @@ setfenv(1, ENV)
 require('mid_jam.test_dsl').to(ENV)
 
 describe("length max", function ()
-  it("does not run if params is more than max", function ()
+  it("does not run if param is more than max", function ()
     local m = Mid.new()
     local o = {}
     m:GET('/:name')
