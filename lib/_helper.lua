@@ -13,7 +13,8 @@ local pretty       = require("pl.pretty")
 local ENV          = {}
 setfenv(1, ENV)
 
-local The_Rules = {
+local The_Rules = {}
+The_Rules = {
   ["length min"] = function(args, req, resp, env)
     return (#args.val >= args.args[1])
   end,
