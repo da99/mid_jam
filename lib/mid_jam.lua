@@ -84,7 +84,10 @@ end)
 
 -- HTTP Methods-----------------------------
 
-function Mid.meta:New_Method(name)
+Mid.HTTP_Methods = {}
+
+function Mid.New_Method(name)
+  _.push(Mid.HTTP_Methods, name)
   Mid.meta[name] = function (self, raw_path, func)
     local path = stringx.strip(raw_path)
 
@@ -151,11 +154,11 @@ function Mid.meta:New_Method(name)
   return Mid.meta[name]
 end
 
-Mid.meta:New_Method('HEAD')
-Mid.meta:New_Method('GET')
-Mid.meta:New_Method('POST')
-Mid.meta:New_Method('PUT')
-Mid.meta:New_Method('DELETE')
+Mid.New_Method('HEAD')
+Mid.New_Method('GET')
+Mid.New_Method('POST')
+Mid.New_Method('PUT')
+Mid.New_Method('DELETE')
 
 --  ----------------------------------------
 
