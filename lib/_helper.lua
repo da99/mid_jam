@@ -2,6 +2,7 @@ local setmetatable = setmetatable
 local print        = print
 local select       = select
 local error        = error
+local tonumber     = tonumber
 local string       = string
 local unpack       = unpack
 
